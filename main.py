@@ -1,21 +1,22 @@
 import requests 
-import time
 
-r = requests.get('https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/common.txt')
-wordlist = r.text
+def update_db():
+  """создаем текстовый файл-словарь с гитхаба"""
+  r = requests.get('https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/SVNDigger/all.txt')
+  wordlist = r.text
+  with open('web-content2.txt', 'w') as f:
+    print(wordlist, file=f)
 
-# создаем текстовый файл-словарь с гитхаба
-# with open('web-content.txt', 'w') as f:
-#   print(wordlist, file=f)
+def start_fuzzing():
+  target = input('Введи url: ') # http://pascher.world/
+  with open('web-content2.txt', 'r') as f:
+    for fuzz in f:
+      target_url = target + fuzz
+      r = requests.get(target_url)
+      if r.status_code == 200:
+        print(target_url, r.status_code)
+      if r.status_code != 200 and r.status_code != 404:
+        print('interesting ', target_url, r.status_code)
+  print('OK')
 
-with open('web-content.txt', 'r') as f:
-  for fuzz in f:
-    target_url = 'http://pascher.world/' + fuzz
-    r = requests.get(target_url)
-    if r.status_code == 200:
-      print(target_url)
-      with open('valid_urls', 'w') as f1:
-        print(target_url, r.status_code, file=f1)
-    else:
-      print(target_url, r.status_code)
-    # time.sleep(0.1)
+start_fuzzing()
