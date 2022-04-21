@@ -2,14 +2,16 @@ import requests
 
 def update_db():
   """создаем текстовый файл-словарь с гитхаба"""
-  r = requests.get('https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/SVNDigger/all.txt')
+  r = requests.get('https://raw.githubusercontent.com/daviddias/node-dirbuster/master/lists/directory-list-2.3-medium.txt')
   wordlist = r.text
-  with open('web-content2.txt', 'w') as f:
+  with open('dirbuster_wordlist.txt', 'w') as f:
     print(wordlist, file=f)
+
+#update_db()
 
 def start_fuzzing():
   target = input('Введи url: ') # http://pascher.world/
-  with open('web-content2.txt', 'r') as f:
+  with open('dirbuster_wordlist.txt', 'r') as f:
     for fuzz in f:
       target_url = target + fuzz
       r = requests.get(target_url)
